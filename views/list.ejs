@@ -6,12 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-   <% if(KindofDay==="Saturday"||KindofDay==="Sunday"){%>
-        <h1 style="color: bisque;">Today is <%=KindofDay  %>!</h1>
-        <%}%>
-        <%else{%>
-        <h1 style="color: aqua;">Today is <%=KindofDay  %>!</h1>
-        <%}%>
-    
+    <% if (KindofDay === "Saturday" || KindofDay === "Sunday") { %>
+        <h1 style="color: bisque;">Today is <%= KindofDay %>!</h1>
+    <% } else { %>
+        <h1 style="color: aqua;">Today is <%= KindofDay %>!</h1>
+    <% } %>
 </body>
 </html>
