@@ -47,19 +47,11 @@ async function insertItemsToDB(defaultItems) {
   }
 }
 
-// insertItemsToDB(defaultItems)
-//   .then(() => {
-//     console.log("Insertion completed successfully.");
-//   })
-//   .catch((error) => {
-//     console.error("Error in insertion:", error.message);
-//   });
-
-
 // Asynchronous function to find all items in the database
 async function findItemsInDB() {
   try {
     const foundItems = await Item.find({});
+
     return foundItems;
   } catch (err) {
     console.error("Error:", err.message);
@@ -71,8 +63,22 @@ async function findItemsInDB() {
 app.get("/", async function(req, res) {
   try {
     const foundItems = await findItemsInDB();
-    res.render("list", { listTitle: "Today", newListItems: foundItems });
-    console.log("Find operation completed successfully.");
+    if (foundItems.length===0)
+    {
+      insertItemsToDB(defaultItems)
+      .then(() => {
+        console.log("Insertion completed successfully.");
+      })
+      .catch((error) => {
+        console.error("Error in insertion:", error.message);
+      });
+        res.redirect("/")
+    }
+    else
+    {
+      res.render("list", { listTitle: "Today", newListItems: foundItems });
+      console.log("Find operation completed successfully.");
+    }
   } catch (error) {
     console.error("Error in find operation:", error.message);
     // Handle the error appropriately, e.g., show an error page.
