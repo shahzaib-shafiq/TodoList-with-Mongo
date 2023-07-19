@@ -47,44 +47,38 @@ async function insertItemsToDB(defaultItems) {
   }
 }
 
-insertItemsToDB(defaultItems)
-  .then(() => {
-    console.log("Insertion completed successfully.");
-  })
-  .catch((error) => {
-    console.error("Error in insertion:", error.message);
-  });
+// insertItemsToDB(defaultItems)
+//   .then(() => {
+//     console.log("Insertion completed successfully.");
+//   })
+//   .catch((error) => {
+//     console.error("Error in insertion:", error.message);
+//   });
 
 
-  async function findItemsInDB() {
-    try {
-      const foundItems = await Item.find({});
-      console.log("DB:", foundItems);
-    } catch (err) {
-      console.error("Error:", err.message);
-      // You might choose to rethrow the error or handle it differently based on your use case.
-      throw err;
-    }
+// Asynchronous function to find all items in the database
+async function findItemsInDB() {
+  try {
+    const foundItems = await Item.find({});
+    return foundItems;
+  } catch (err) {
+    console.error("Error:", err.message);
+    // You might choose to rethrow the error or handle it differently based on your use case.
+    throw err;
   }
-  
-  // Usage
-  findItemsInDB()
-    .then(() => {
-      console.log("Find operation completed successfully.");
-    })
-    .catch((error) => {
-      console.error("Error in find operation:", error.message);
-    });
-    
+}
 
-
-app.get("/", function(req, res) {
-
-
-  res.render("list", {listTitle:"Today", newListItems: items});
-
+app.get("/", async function(req, res) {
+  try {
+    const foundItems = await findItemsInDB();
+    res.render("list", { listTitle: "Today", newListItems: foundItems });
+    console.log("Find operation completed successfully.");
+  } catch (error) {
+    console.error("Error in find operation:", error.message);
+    // Handle the error appropriately, e.g., show an error page.
+    res.status(500).send("Error in finding items.");
+  }
 });
-
 app.post("/", function(req, res){
 
   const item = req.body.newItem;
