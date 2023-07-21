@@ -17,10 +17,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/todolistDB');
 const items = ["Buy Food", "Cook Food", "Eat Food"];
 const workItems = [];
 
+//MongoDb  Schema
+
 const itemsSchema={
   name:String
 
 }
+//MongoDb Model 
+
 const Item=mongoose.model("Item",itemsSchema)
 
 const Item1=new Item({
@@ -81,26 +85,38 @@ app.get("/", async function(req, res) {
     }
   } catch (error) {
     console.error("Error in find operation:", error.message);
+
     // Handle the error appropriately, e.g., show an error page.
     res.status(500).send("Error in finding items.");
   }
 });
 app.post("/", function(req, res){
 
-  const item = req.body.newItem;
 
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
-    items.push(item);
-    res.redirect("/");
-  }
-});
+  const itemName = req.body.newItem;
+  const newItem=Item({
+    name:itemName
+  })
+  newItem.save();
+  res.redirect("/");
 
-app.get("/work", function(req,res){
-  res.render("list", {listTitle: "Work List", newListItems: workItems});
-});
+  });
+
+
+  app.post("/delete",function(req,res){
+  const checkboxItemId= req.body.checkbox;
+  Item.findByIdAndRemove(checkboxItemId)
+  .then(() => {
+    console.log("Deleted");
+  })
+  .catch((err) => {
+    console.error("Error in find operation:", err.message);
+  });
+
+res.redirect("/");
+
+  })
+
 
 app.get("/about", function(req, res){
   res.render("about");
